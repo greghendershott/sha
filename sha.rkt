@@ -85,9 +85,10 @@
  [hmac-sha224 (bytes? bytes? . -> . sha224?)]
  [hmac-sha256 (bytes? bytes? . -> . sha256?)]
  [hmac-sha384 (bytes? bytes? . -> . sha384?)]
- [hmac-sha512 (bytes? bytes? . -> . sha512?)]
+ [hmac-sha512 (bytes? bytes? . -> . sha512?)])
 
- [bytes->hex-string (bytes? . -> . string?)])
+(provide bytes->hex-string) ;Supplying a bytes? -> string? contract
+                            ;would add ~13% overhead -- so don't.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
