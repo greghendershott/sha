@@ -8,6 +8,7 @@
 @defmodule/this-package[aws]
 
 Provides a Racket interface to the OpenSSL implementation of SHA-1 and SHA-2.
+
 SHA-2 includes four flavors: SHA-224, SHA-256, SHA-384, and SHA-512.
 
 
