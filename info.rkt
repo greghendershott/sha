@@ -7,7 +7,7 @@
 (define homepage "https://github.com/greghendershott/sha")
 
 (define release-notes
-  '((p "Initial release.")))
+  '((p "Fix missing `require' in main.rkt.")))
 (define version "2012-08-27")
 (define can-be-loaded-with 'all)
 
