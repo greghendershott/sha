@@ -10,7 +10,8 @@
 
 (require racket/contract
          openssl/libcrypto
-         (rename-in ffi/unsafe [-> f->]))
+         (rename-in ffi/unsafe [-> f->])
+         (only-in file/sha1 bytes->hex-string))
 
 (define/contract (get-sha sym bytes-len)
   (symbol? exact-positive-integer? . -> . (bytes? . -> . bytes?))
@@ -66,16 +67,6 @@
 (define (sha256? x) (and (bytes? x) (= (bytes-length x) sha256-len)))
 (define (sha384? x) (and (bytes? x) (= (bytes-length x) sha384-len)))
 (define (sha512? x) (and (bytes? x) (= (bytes-length x) sha512-len)))
-
-(define hex-digits "0123456789abcdef")
-(define (bytes->hex-string bstr)
-  (for/fold ([s ""])
-            ([b (in-bytes bstr)])
-    (string-append s
-                   (make-string 1 (string-ref hex-digits
-                                              (arithmetic-shift b -4)))
-                   (make-string 1 (string-ref hex-digits
-                                              (bitwise-and b #xf))))))
 
 (provide/contract
  [sha1?   (any/c . -> . boolean?)]
