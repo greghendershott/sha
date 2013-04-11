@@ -7,4 +7,4 @@ Uses the approach of delegating to OpenSSL via Racket's FFI.
 
 Adds the four SHA-2 algorithms: SHA-224, SHA-256, SHA-384, SHA-512.
 
-See [documentation on PLaneT](http://planet.racket-lang.org/package-source/gh/sha.plt/1/1/planet-docs/manual/index.html).
+[Documentation](https://github.com/greghendershott/sha/blob/master/sha/manual.md).
