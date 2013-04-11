@@ -1,11 +1,8 @@
 #lang scribble/manual
 
-@(require planet/scribble
-          (for-label racket))
+@(require (for-label racket))
 
-@title{SHA module}
-
-@defmodule/this-package[aws]
+@defmodule[aws]
 
 Provides a Racket interface to the OpenSSL implementation of SHA-1 and SHA-2.
 
