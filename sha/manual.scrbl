@@ -2,7 +2,7 @@
 
 @(require (for-label racket))
 
-@defmodule[aws]
+@defmodule[sha]
 
 Provides a Racket interface to the OpenSSL implementation of SHA-1 and SHA-2.
 

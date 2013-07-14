@@ -1,7 +1,5 @@
-SHA module
-
 ```racket
- (require aws)
+ (require sha)
 ```
 
 Provides a Racket interface to the OpenSSL implementation of SHA-1 and
