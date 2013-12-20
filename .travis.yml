@@ -11,6 +11,7 @@ language: c
 env:
  - RACKET_VERSION=5.3.5
  - RACKET_VERSION=5.3.6
+ - RACKET_VERSION=HEAD
 
 before_install:
  - curl -L https://github.com/greghendershott/travis-racket/releases/download/v0.2/install-racket.sh | sh
@@ -19,12 +20,9 @@ install:
 
 before_script:
 
-# Here supply steps such as raco make, raco test, etc.  Note that you
-# need to supply /usr/racket/bin/ -- it's not in PATH. You can run
-# `raco pkg install --deps search-auto <pkg>` to install any required
-# packages without it getting stuck on a confirmation prompt.
 script:
- - /usr/racket/bin/raco make main.rkt
- - /usr/racket/bin/raco test -x .
+ - cd ..   # Travis did a cd into the dir. Back up, for the next:
+ - /usr/racket/bin/raco pkg install --deps search-auto --link sha
+ - /usr/racket/bin/raco test -x -p sha
 
 after_script:
