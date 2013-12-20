@@ -14,7 +14,7 @@ env:
  - RACKET_VERSION=HEAD
 
 before_install:
- - curl -L https://github.com/greghendershott/travis-racket/releases/download/v0.2/install-racket.sh | sh
+ - curl -L https://github.com/greghendershott/travis-racket/releases/download/v0.3/install-racket.sh | sh
 
 install:
 
