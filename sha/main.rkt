@@ -13,6 +13,13 @@
          (rename-in ffi/unsafe [-> f->])
          (only-in file/sha1 bytes->hex-string))
 
+;; predicates (for contracts)
+(define (sha1? x)   (and (bytes? x) (= (bytes-length x) sha1-len)))
+(define (sha224? x) (and (bytes? x) (= (bytes-length x) sha224-len)))
+(define (sha256? x) (and (bytes? x) (= (bytes-length x) sha256-len)))
+(define (sha384? x) (and (bytes? x) (= (bytes-length x) sha384-len)))
+(define (sha512? x) (and (bytes? x) (= (bytes-length x) sha512-len)))
+
 (provide/contract
  [sha1?   (any/c . -> . boolean?)]
  [sha224? (any/c . -> . boolean?)]
@@ -82,13 +89,6 @@
 (define hmac-sha256 (get-hmac-sha 'SHA256 'EVP_sha256 sha256-len))
 (define hmac-sha384 (get-hmac-sha 'SHA384 'EVP_sha384 sha384-len))
 (define hmac-sha512 (get-hmac-sha 'SHA512 'EVP_sha512 sha512-len))
-
-;; predicates (for contracts)
-(define (sha1? x)   (and (bytes? x) (= (bytes-length x) sha1-len)))
-(define (sha224? x) (and (bytes? x) (= (bytes-length x) sha224-len)))
-(define (sha256? x) (and (bytes? x) (= (bytes-length x) sha256-len)))
-(define (sha384? x) (and (bytes? x) (= (bytes-length x) sha384-len)))
-(define (sha512? x) (and (bytes? x) (= (bytes-length x) sha512-len)))
 
 (module+ test
   (require rackunit)
