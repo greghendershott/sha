@@ -2,6 +2,8 @@
 
 @(require (for-label racket))
 
+@title{SHA and SHA-2}
+
 @defmodule[sha]
 
 Provides a Racket interface to the OpenSSL implementation of SHA-1 and SHA-2.
