@@ -8,42 +8,20 @@
 ;;
 ;; TO-DO: Add SHA-3 after finalized ("late 2012"?).
 
-(require racket/contract
+(require (for-syntax racket/base
+                     racket/syntax
+                     syntax/parse)
+         (rename-in ffi/unsafe (-> f->))
+         (only-in file/sha1
+                  bytes->hex-string)
          openssl/libcrypto
-         (rename-in ffi/unsafe [-> f->])
-         (only-in file/sha1 bytes->hex-string))
-
-;; predicates (for contracts)
-(define (sha1? x)   (and (bytes? x) (= (bytes-length x) sha1-len)))
-(define (sha224? x) (and (bytes? x) (= (bytes-length x) sha224-len)))
-(define (sha256? x) (and (bytes? x) (= (bytes-length x) sha256-len)))
-(define (sha384? x) (and (bytes? x) (= (bytes-length x) sha384-len)))
-(define (sha512? x) (and (bytes? x) (= (bytes-length x) sha512-len)))
-
-(provide/contract
- [sha1?   (any/c . -> . boolean?)]
- [sha224? (any/c . -> . boolean?)]
- [sha256? (any/c . -> . boolean?)]
- [sha384? (any/c . -> . boolean?)]
- [sha512? (any/c . -> . boolean?)]
-
- [sha1   (bytes? . -> . sha1?)]
- [sha224 (bytes? . -> . sha224?)]
- [sha256 (bytes? . -> . sha256?)]
- [sha384 (bytes? . -> . sha384?)]
- [sha512 (bytes? . -> . sha512?)]
-
- [hmac-sha1   (bytes? bytes? . -> . sha1?)]
- [hmac-sha224 (bytes? bytes? . -> . sha224?)]
- [hmac-sha256 (bytes? bytes? . -> . sha256?)]
- [hmac-sha384 (bytes? bytes? . -> . sha384?)]
- [hmac-sha512 (bytes? bytes? . -> . sha512?)])
+         racket/contract)
 
 (provide bytes->hex-string) ;Supplying a bytes? -> string? contract
                             ;would add ~13% overhead -- so don't.
 
 (define/contract (get-sha sym bytes-len)
-  (symbol? exact-positive-integer? . -> . (bytes? . -> . bytes?))
+  (-> symbol? exact-positive-integer? (-> bytes? bytes?))
   (unless libcrypto
     (error sym "libcrypto could not load"))
   (get-ffi-obj sym libcrypto
@@ -54,7 +32,7 @@
                      f-> (make-sized-byte-string md bytes-len))))
 
 (define/contract (get-hmac-sha sym evp-sym bytes-len)
-  (symbol? symbol? exact-positive-integer? . -> . (bytes? bytes? . -> . bytes?))
+  (-> symbol? symbol? exact-positive-integer? (-> bytes? bytes? bytes?))
   (unless libcrypto
     (error sym "libcrypto could not load"))
   (define evp (get-ffi-obj evp-sym libcrypto (_fun f-> _fpointer)))
@@ -69,26 +47,34 @@
                      f-> _bytes
                      f-> (make-sized-byte-string md bytes-len))))
 
-;; Length in bytes
-(define sha1-len   20)
-(define sha224-len 28)
-(define sha256-len 32)
-(define sha384-len 48)
-(define sha512-len 64)
+;; Given a SHA number like `256`, define and provide three functions:
+;; 1. Predicate e.g. `sha256?`.
+;; 2. Hash e.g. `sha256`.
+;; 3. HMAC encoder e.g. `hmac-sha256`.
+(define-syntax (define-sha stx)
+  (syntax-parse stx
+    [(_ num:exact-positive-integer)
+     (let ([n (syntax-e #'num)])
+       (with-syntax ([pred-id (format-id stx "sha~a?"     n #:source #'num)]
+                     [hash-id (format-id stx "sha~a"      n #:source #'num)]
+                     [hmac-id (format-id stx "hmac-sha~a" n #:source #'num)]
+                     [len     (if (= n 1) 20 (/ n 8))]
+                     [ssl-sym (string->symbol (format "SHA~a" n))]
+                     [evp-sym (string->symbol (format "EVP_sha~a" n))])
+         #`(begin
+             (define (pred-id x) (and (bytes? x) (= (bytes-length x) len)))
+             (define hash-id (get-sha 'ssl-sym len))
+             (define hmac-id (get-hmac-sha 'ssl-sym 'evp-sym len))
+             (provide
+              (contract-out [pred-id (-> any/c boolean?)]
+                            [hash-id (-> bytes? pred-id)]
+                            [hmac-id (-> bytes? bytes? pred-id)])))))]))
 
-;; Hash functions
-(define sha1   (get-sha 'SHA1   sha1-len))
-(define sha224 (get-sha 'SHA224 sha224-len))
-(define sha256 (get-sha 'SHA256 sha256-len))
-(define sha384 (get-sha 'SHA384 sha384-len))
-(define sha512 (get-sha 'SHA512 sha512-len))
-
-;; HMAC functions
-(define hmac-sha1   (get-hmac-sha 'SHA1   'EVP_sha1   sha1-len))
-(define hmac-sha224 (get-hmac-sha 'SHA224 'EVP_sha224 sha224-len))
-(define hmac-sha256 (get-hmac-sha 'SHA256 'EVP_sha256 sha256-len))
-(define hmac-sha384 (get-hmac-sha 'SHA384 'EVP_sha384 sha384-len))
-(define hmac-sha512 (get-hmac-sha 'SHA512 'EVP_sha512 sha512-len))
+(define-sha   1)
+(define-sha 224)
+(define-sha 256)
+(define-sha 384)
+(define-sha 512)
 
 (module+ test
   (require rackunit)
