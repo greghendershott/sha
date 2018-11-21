@@ -11,11 +11,13 @@
 (require (for-syntax racket/base
                      racket/syntax
                      syntax/parse)
-         (rename-in ffi/unsafe (-> f->))
+         (rename-in (except-in ffi/unsafe make-sized-byte-string)
+                    [-> f->])
          (only-in file/sha1
                   bytes->hex-string)
          openssl/libcrypto
-         racket/contract)
+         racket/contract
+         "bytes.rkt")
 
 (provide bytes->hex-string) ;Supplying a bytes? -> string? contract
                             ;would add ~13% overhead -- so don't.
@@ -29,7 +31,7 @@
                      [data_len : _int = (bytes-length data)]
                      [md : (_bytes o bytes-len)]
                      f-> _bytes
-                     f-> (make-sized-byte-string md bytes-len))))
+                     f-> (compatible-make-sized-byte-string md bytes-len))))
 
 (define/contract (get-hmac-sha sym evp-sym bytes-len)
   (-> symbol? symbol? exact-positive-integer? (-> bytes? bytes? bytes?))
@@ -45,7 +47,7 @@
                      [md : (_bytes o bytes-len)]
                      [md_len : (_ptr o _uint)]
                      f-> _bytes
-                     f-> (make-sized-byte-string md bytes-len))))
+                     f-> (compatible-make-sized-byte-string md bytes-len))))
 
 ;; Given a SHA number like `256`, define and provide three functions:
 ;; 1. Predicate e.g. `sha256?`.
