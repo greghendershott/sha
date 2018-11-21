@@ -38,13 +38,17 @@ env:
     - RACKET_VERSION=6.10
     - RACKET_VERSION=6.11
     - RACKET_VERSION=6.12
+    - RACKET_VERSION=7.0
+    - RACKET_VERSION=7.1
     - RACKET_VERSION=HEAD
+    - RACKET_VERSION=HEADCS
 
 # You may want to test against certain versions of Racket, without
 # having them count against the overall success/failure.
 matrix:
   allow_failures:
     - env: RACKET_VERSION=HEAD
+    - env: RACKET_VERSION=HEADCS
     # https://github.com/greghendershott/travis-racket/issues/9
     - env: RACKET_VERSION=5.3.5
     - env: RACKET_VERSION=5.3.6
