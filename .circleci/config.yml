@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: jackfirth/racket
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install
+          command: raco pkg install --auto --link --name sha
+
+      - run:
+          name: Test
+          command: raco test -x -p sha
