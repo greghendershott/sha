@@ -86,6 +86,22 @@ jobs:
     docker:
       - image: jackfirth/racket:latest
 
+  "racket:head":
+    steps:
+      - run:
+          name: Download Racket HEAD
+          command: curl -L -o install-racket.sh "https://plt.eecs.northwestern.edu/snapshots/current/installers/min-racket-current-x86_64-linux-precise.sh"
+      - run:
+          name: Install Racket HEAD
+          command: echo "yes\n1\n" | sh install-racket.sh --create-dir --unix-style --dest /usr/
+      - checkout
+      - run:
+          name: Install
+          command: raco pkg install --auto --link --name sha
+      - run:
+          name: Test
+          command: raco test -x -p sha
+
 workflows:
   version: 2
   build:
@@ -104,4 +120,5 @@ workflows:
       - "racket:7.0"
       - "racket:7.1"
       - "racket:7.2"
+      - "racket:head"
       - "racket:latest"
