@@ -11,19 +11,97 @@ shared: &shared
           command: raco test -x -p sha
 
 jobs:
+  "racket:6.2":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:6.2
+
+  "racket:6.3":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:6.3
+
+  "racket:6.4":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:6.4
+
+  "racket:6.5":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:6.5
+
+  "racket:6.6":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:6.6
+
+  "racket:6.7":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:6.7
+
+  "racket:6.8":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:6.8
+
+  "racket:6.9":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:6.9
+
+  "racket:6.10":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:6.10
+
+  "racket:6.11":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:6.11
+
+  "racket:6.12":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:6.12
+
+  "racket:7.0":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:7.0
+
+  "racket:7.1":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:7.1
+
+  "racket:7.2":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:7.2
+
   "racket:latest":
     <<: *shared
     docker:
       - image: jackfirth/racket:latest
 
-  "racket:6.0":
-    <<: *shared
-    docker:
-      - image: jackfirth/racket:6.0
-
 workflows:
   version: 2
   build:
     jobs:
+      - "racket:6.2"
+      - "racket:6.3"
+      - "racket:6.4"
+      - "racket:6.5"
+      - "racket:6.6"
+      - "racket:6.7"
+      - "racket:6.8"
+      - "racket:6.9"
+      - "racket:6.10"
+      - "racket:6.11"
+      - "racket:6.12"
+      - "racket:7.0"
+      - "racket:7.1"
+      - "racket:7.2"
       - "racket:latest"
-      - "racket:6.0"
