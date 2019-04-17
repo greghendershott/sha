@@ -1,5 +1,9 @@
 version: 2.0
 
+# Because Circle CI has no "matrix" like Travis CI, expressing this
+# via "workflow" and "jos" is tedious. Mitigated somewhat by reusing
+# `steps` via a YAML dict merge doohickey.
+
 shared: &shared
     steps:
       - checkout
@@ -16,10 +20,11 @@ jobs:
     docker:
       - image: jackfirth/racket:6.2
 
-  "racket:6.3":
-    <<: *shared
-    docker:
-      - image: jackfirth/racket:6.3
+  ## Racket 6.3 consistently fails to build.
+  # "racket:6.3":
+  #   <<: *shared
+  #   docker:
+  #     - image: jackfirth/racket:6.3
 
   "racket:6.4":
     <<: *shared
@@ -81,7 +86,10 @@ jobs:
     docker:
       - image: jackfirth/racket:7.2
 
-  "racket:head":
+  # No docker image for nightly snapshots. Use the Smith Barney
+  # method.
+
+  "racket HEAD":
     docker:
       - image: buildpack-deps:stable
     steps:
@@ -102,22 +110,43 @@ jobs:
           name: Test
           command: raco test -x -p sha
 
+  "racket HEAD-CS":
+    docker:
+      - image: buildpack-deps:stable
+    steps:
+      - run:
+          name: Download Racket HEAD-CS installer
+          command: curl -L -o install-racket.sh "https://www.cs.utah.edu/plt/snapshots/current/installers/min-racket-current-x86_64-linux-cs-xenial.sh"
+      - run:
+          name: Install Racket HEAD-CS
+          command: echo "yes\n1\n" | sh install-racket.sh --create-dir --unix-style --dest /usr/
+      - run:
+          name: Delete Racket HEAD-CS installer
+          command: rm install-racket.sh
+      - checkout
+      - run:
+          name: Install
+          command: raco pkg install --auto --link --name sha
+      - run:
+          name: Test
+          command: raco test -x -p sha
+
 workflows:
   version: 2
   build:
     jobs:
       - "racket:6.2"
-      # - "racket:6.3"
       - "racket:6.4"
       - "racket:6.5"
       - "racket:6.6"
-      # - "racket:6.7"
-      # - "racket:6.8"
-      # - "racket:6.9"
-      # - "racket:6.10"
+      - "racket:6.7"
+      - "racket:6.8"
+      - "racket:6.9"
+      - "racket:6.10"
       - "racket:6.11"
       - "racket:6.12"
       - "racket:7.0"
-      # - "racket:7.1"
+      - "racket:7.1"
       - "racket:7.2"
-      - "racket:head"
+      - "racket HEAD"
+      - "racket HEAD-CS"
