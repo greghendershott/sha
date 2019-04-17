@@ -1,16 +1,29 @@
-version: 2
-jobs:
-  build:
-    docker:
-      - image: jackfirth/racket
+version: 2.0
 
+shared: &shared
     steps:
       - checkout
-
       - run:
           name: Install
           command: raco pkg install --auto --link --name sha
-
       - run:
           name: Test
           command: raco test -x -p sha
+
+jobs:
+  "racket:latest":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:latest
+
+  "racket:6.0":
+    <<: *shared
+    docker:
+      - image: jackfirth/racket:6.0
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - "racket:latest"
+      - "racket:6.0"
