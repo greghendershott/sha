@@ -87,6 +87,8 @@ jobs:
       - image: jackfirth/racket:latest
 
   "racket:head":
+    docker:
+      - image: buildpack-deps:stable
     steps:
       - run:
           name: Download Racket HEAD
