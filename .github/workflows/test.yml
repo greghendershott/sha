@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        racket-version:
+          - '6.9'
+          - '7.9'
+          - 'current'
+    name: Test on ${{ matrix.racket-version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Install Racket
+        uses: Bogdanp/setup-racket@v0.8
+        with:
+          architecture: 'x64'
+          distribution: 'full'
+          version: ${{ matrix.racket-version }}
+      - name: Install Package
+        run: raco pkg install --deps search-auto --link sha
+      - name: Run Tests
+        run: raco test -x -p sha

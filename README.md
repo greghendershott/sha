@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/greghendershott/sha.png?branch=master)](https://travis-ci.org/greghendershott/sha)
+![CI](https://github.com/greghendershott/sha/workflows/CI/badge.svg)
 [![raco pkg install sha](https://img.shields.io/badge/raco_pkg_install-sha-aa00ff.svg)](http:pkgs.racket-lang.org/#[sha])
 [![Documentation](https://img.shields.io/badge/read-documentation-blue.svg)](http://pkg-build.racket-lang.org/doc/sha@sha/index.html)
 ![MIT License](https://img.shields.io/badge/license-MIT-118811.svg)
