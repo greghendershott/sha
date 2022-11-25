@@ -1,3 +1,6 @@
+;; Copyright (c) 2012-2022 by Greg Hendershott.
+;; SPDX-License-Identifier: BSD-2-Clause
+
 #lang racket/base
 
 ;; ffi/unsafe's make-sized-byte-string always throws an exception on
